@@ -1,0 +1,15 @@
+INFO 2025-09-16 05:51:24,507 autoreload 183855 139734344255296 Watching for file changes with StatReloader
+INFO 2025-09-16 05:53:43,751 autoreload 183855 139734344255296 /home/asus/aaa-samurai/django-boilerplate/authentication/views.py changed, reloading.
+INFO 2025-09-16 05:53:44,064 autoreload 185100 140455641569088 Watching for file changes with StatReloader
+INFO 2025-09-16 05:53:54,362 autoreload 185100 140455641569088 /home/asus/aaa-samurai/django-boilerplate/authentication/views.py changed, reloading.
+INFO 2025-09-16 05:53:54,634 autoreload 185229 140262253774656 Watching for file changes with StatReloader
+INFO 2025-09-16 05:54:18,093 autoreload 185513 140326395852608 Watching for file changes with StatReloader
+WARNING 2025-09-16 05:54:23,777 log 185513 140326321395456 Not Found: /
+WARNING 2025-09-16 05:54:23,860 log 185513 140326321395456 Not Found: /favicon.ico
+WARNING 2025-09-16 05:54:31,219 log 185513 140326321395456 Not Found: /api/auth/
+WARNING 2025-09-16 05:54:31,257 log 185513 140326321395456 Not Found: /favicon.ico
+ERROR 2025-09-16 05:54:37,534 exceptions 185513 140326321395456 API Error: Method "GET" not allowed. - Context: RegisterView
+WARNING 2025-09-16 05:54:37,535 log 185513 140326321395456 Method Not Allowed: /api/auth/register/
+WARNING 2025-09-16 05:54:37,603 log 185513 140326244972288 Not Found: /favicon.ico
+INFO 2025-09-16 05:59:56,523 autoreload 185513 140326395852608 /home/asus/aaa-samurai/django-boilerplate/authentication/views.py changed, reloading.
+INFO 2025-09-16 05:59:56,800 autoreload 188537 140652250023744 Watching for file changes with StatReloader
