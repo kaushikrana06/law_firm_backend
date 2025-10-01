@@ -113,3 +113,119 @@ ERROR 2025-10-01 07:15:22,779 exceptions 19741 6206173184 API Error: {'detail': 
 WARNING 2025-10-01 07:15:22,779 log 19741 6206173184 Unauthorized: /api/auth/profile/
 ERROR 2025-10-01 07:17:28,183 exceptions 19741 6206173184 API Error: {'detail': ErrorDetail(string='Token is invalid or expired', code='token_not_valid'), 'code': ErrorDetail(string='token_not_valid', code='token_not_valid')} - Context: CustomTokenVerifyView
 WARNING 2025-10-01 07:17:28,185 log 19741 6206173184 Unauthorized: /api/auth/token/verify/
+INFO 2025-10-01 15:20:12,736 autoreload 13203 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 15:20:44,426 autoreload 13739 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 15:30:51,002 autoreload 13739 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-01 15:30:51,310 autoreload 17048 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 15:35:59,512 autoreload 17048 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-01 15:35:59,795 autoreload 18277 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 15:36:05,993 autoreload 18277 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-01 15:36:06,158 autoreload 18320 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 15:36:29,730 autoreload 18320 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-01 15:36:29,908 autoreload 18391 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 15:36:33,021 autoreload 18391 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-01 15:36:33,181 autoreload 18428 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 15:36:36,312 autoreload 18428 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-01 15:36:36,471 autoreload 18439 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 15:36:37,561 autoreload 18439 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-01 15:36:37,717 autoreload 18440 8517896192 Watching for file changes with StatReloader
+ERROR 2025-10-01 15:37:22,748 exceptions 18440 6137851904 API Error: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]} - Context: AttorneyLoginView
+WARNING 2025-10-01 15:37:22,748 log 18440 6137851904 Bad Request: /api/auth/attorney/login/
+ERROR 2025-10-01 16:15:40,470 exceptions 18440 6137851904 API Error: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]} - Context: AttorneyLoginView
+WARNING 2025-10-01 16:15:40,472 log 18440 6137851904 Bad Request: /api/auth/attorney/login/
+ERROR 2025-10-01 16:26:39,561 exceptions 18440 6137851904 API Error: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]} - Context: AttorneyLoginView
+WARNING 2025-10-01 16:26:39,563 log 18440 6137851904 Bad Request: /api/auth/attorney/login/
+INFO 2025-10-01 16:33:42,880 autoreload 18440 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/exceptions.py changed, reloading.
+INFO 2025-10-01 16:33:43,169 autoreload 29779 8517896192 Watching for file changes with StatReloader
+ERROR 2025-10-01 16:37:44,382 exceptions 29779 6123581440 API Error: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]} - Context: AttorneyLoginView
+WARNING 2025-10-01 16:37:44,383 log 29779 6123581440 Bad Request: /api/auth/attorney/login/
+ERROR 2025-10-01 16:43:23,344 exceptions 29779 6123581440 API Error: Authentication credentials were not provided. - Context: UserProfileView
+WARNING 2025-10-01 16:43:23,345 log 29779 6123581440 Unauthorized: /api/auth/profile/
+INFO 2025-10-01 20:11:10,952 autoreload 29779 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-01 20:11:11,731 autoreload 73249 8517896192 Watching for file changes with StatReloader
+ERROR 2025-10-01 20:11:18,143 exceptions 73249 6170062848 API Error: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]} - Context: AttorneyLoginView
+WARNING 2025-10-01 20:11:18,143 log 73249 6170062848 Bad Request: /api/auth/attorney/login/
+ERROR 2025-10-01 20:11:46,824 log 73249 6170062848 Internal Server Error: /api/auth/logout/
+Traceback (most recent call last):
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py", line 2053, in get_prep_value
+    return int(value)
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'UntypedToken'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/views/generic/base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/rest_framework/decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/views.py", line 83, in logout_view
+    BlacklistedToken.objects.get_or_create(token=token)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/db/models/query.py", line 916, in get_or_create
+    return self.get(**kwargs), False
+           ~~~~~~~~^^^^^^^^^^
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/db/models/query.py", line 623, in get
+    clone = self._chain() if self.query.combinator else self.filter(*args, **kwargs)
+                                                        ~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/db/models/query.py", line 1436, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/db/models/query.py", line 1454, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/db/models/query.py", line 1461, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/db/models/sql/query.py", line 1546, in add_q
+    clause, _ = self._add_q(q_object, self.used_aliases)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/db/models/sql/query.py", line 1577, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<6 lines>...
+        summarize=summarize,
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/db/models/sql/query.py", line 1492, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/db/models/sql/query.py", line 1319, in build_lookup
+    lookup = lookup_class(lhs, rhs)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/db/models/lookups.py", line 27, in __init__
+    self.rhs = self.get_prep_lookup()
+               ~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/db/models/fields/related_lookups.py", line 166, in get_prep_lookup
+    self.rhs = target_field.get_prep_value(self.rhs)
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/db/models/fields/__init__.py", line 2055, in get_prep_value
+    raise e.__class__(
+        "Field '%s' expected a number but got %r." % (self.name, value),
+    ) from e
+TypeError: Field 'id' expected a number but got {'token_type': 'refresh', 'exp': 1759954301, 'iat': 1759349501, 'jti': '85b5bbd080b140a98cd0eb999876122e', 'user_id': 2, 'email': 'lawyer@firm.com', 'is_verified': True, 'user_type': 'ATTORNEY'}.
+INFO 2025-10-01 20:18:29,957 autoreload 73249 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/views.py changed, reloading.
+INFO 2025-10-01 20:18:30,259 autoreload 74675 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 20:19:26,331 autoreload 74675 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/views.py changed, reloading.
+INFO 2025-10-01 20:19:26,630 autoreload 74877 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 20:20:18,021 autoreload 75227 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 20:20:58,386 views 75227 6131806208 User 2 logged out (refresh blacklisted)

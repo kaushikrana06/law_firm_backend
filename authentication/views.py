@@ -4,6 +4,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+
 import logging
 
 from .serializers import (
@@ -73,19 +75,28 @@ class EmailVerificationView(generics.GenericAPIView):
 @permission_classes([IsAuthenticated])
 @throttle_classes([UserRateThrottle])
 def logout_view(request):
+    refresh_token = request.data.get('refresh')
+    if not refresh_token:
+        return Response(
+            {'error': 'Refresh token required.'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
     try:
-        refresh_token = request.data.get('refresh')
-        if refresh_token:
-            from rest_framework_simplejwt.tokens import UntypedToken, TokenError
-            from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
-            
-            token = UntypedToken(refresh_token)
-            BlacklistedToken.objects.get_or_create(token=token)
-            logger.info(f"User {request.user.id} logged out")
-            return Response({'message': 'Logged out successfully.'}, status=status.HTTP_205_RESET_CONTENT)
-        return Response({'error': 'Refresh token required.'}, status=status.HTTP_400_BAD_REQUEST)
+        # This automatically finds/creates the OutstandingToken and
+        # inserts a row in the blacklist table.
+        token = RefreshToken(refresh_token)
+        token.blacklist()
     except TokenError:
-        return Response({'error': 'Invalid token.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {'error': 'Invalid or expired token.'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    logger.info(
+        f"User {getattr(request.user, 'id', 'unknown')} logged out (refresh blacklisted)"
+    )
+    return Response({'message': 'Logged out successfully.'}, status=status.HTTP_205_RESET_CONTENT)
+
 
 class CustomTokenRefreshView(TokenRefreshView):
     throttle_classes = [UserRateThrottle]
