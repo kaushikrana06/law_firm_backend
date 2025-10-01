@@ -13,3 +13,103 @@ WARNING 2025-09-16 05:54:37,535 log 185513 140326321395456 Method Not Allowed: /
 WARNING 2025-09-16 05:54:37,603 log 185513 140326244972288 Not Found: /favicon.ico
 INFO 2025-09-16 05:59:56,523 autoreload 185513 140326395852608 /home/asus/aaa-samurai/django-boilerplate/authentication/views.py changed, reloading.
 INFO 2025-09-16 05:59:56,800 autoreload 188537 140652250023744 Watching for file changes with StatReloader
+INFO 2025-10-01 06:35:29,559 autoreload 9072 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 06:40:18,270 autoreload 11034 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 06:41:24,002 autoreload 11800 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 06:41:32,563 models 11800 6123237376 Verification email sent to lawyer@firm.com
+INFO 2025-10-01 06:41:32,563 serializers 11800 6123237376 User registered: 2
+INFO 2025-10-01 06:49:59,806 models 11800 6140063744 Email verified for user 2
+ERROR 2025-10-01 06:50:09,301 exceptions 11800 6140063744 API Error: {'username': [ErrorDetail(string='This field is required.', code='required')]} - Context: AttorneyLoginView
+WARNING 2025-10-01 06:50:09,303 log 11800 6140063744 Bad Request: /api/auth/attorney/login/
+ERROR 2025-10-01 06:51:35,277 exceptions 11800 6156890112 API Error: {'username': [ErrorDetail(string='This field is required.', code='required')]} - Context: AttorneyLoginView
+WARNING 2025-10-01 06:51:35,279 log 11800 6156890112 Bad Request: /api/auth/attorney/login/
+ERROR 2025-10-01 06:51:54,865 log 11800 6156890112 Internal Server Error: /api/auth/attorney/login/
+Traceback (most recent call last):
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/views/generic/base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/views.py", line 45, in post
+    refresh = self.get_token(user)
+              ^^^^^^^^^^^^^^
+AttributeError: 'AttorneyLoginView' object has no attribute 'get_token'
+INFO 2025-10-01 06:52:23,331 autoreload 11800 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/models.py changed, reloading.
+INFO 2025-10-01 06:52:23,613 autoreload 15655 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 06:53:13,743 autoreload 15655 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/models.py changed, reloading.
+INFO 2025-10-01 06:53:13,974 autoreload 15905 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 06:53:15,059 autoreload 15905 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/models.py changed, reloading.
+INFO 2025-10-01 06:53:15,221 autoreload 15923 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 06:53:16,349 autoreload 15923 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/models.py changed, reloading.
+INFO 2025-10-01 06:53:16,499 autoreload 15938 8517896192 Watching for file changes with StatReloader
+ERROR 2025-10-01 06:53:31,159 exceptions 15938 6204354560 API Error: {'username': [ErrorDetail(string='This field is required.', code='required')]} - Context: AttorneyLoginView
+WARNING 2025-10-01 06:53:31,160 log 15938 6204354560 Bad Request: /api/auth/attorney/login/
+INFO 2025-10-01 06:54:29,031 autoreload 15938 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/serializers.py changed, reloading.
+INFO 2025-10-01 06:54:29,311 autoreload 16313 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 06:54:33,476 autoreload 16313 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/serializers.py changed, reloading.
+INFO 2025-10-01 06:54:33,641 autoreload 16341 8517896192 Watching for file changes with StatReloader
+ERROR 2025-10-01 06:54:40,324 exceptions 16341 6198996992 API Error: {'username': [ErrorDetail(string='This field is required.', code='required')]} - Context: AttorneyLoginView
+WARNING 2025-10-01 06:54:40,324 log 16341 6198996992 Bad Request: /api/auth/attorney/login/
+INFO 2025-10-01 06:55:42,105 autoreload 16341 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/serializers.py changed, reloading.
+INFO 2025-10-01 06:55:42,336 autoreload 16953 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 06:55:45,472 autoreload 16953 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/serializers.py changed, reloading.
+INFO 2025-10-01 06:55:45,642 autoreload 16981 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 06:58:58,758 autoreload 16981 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/serializers.py changed, reloading.
+INFO 2025-10-01 06:58:59,046 autoreload 17900 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 06:59:00,138 autoreload 17900 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/serializers.py changed, reloading.
+INFO 2025-10-01 06:59:00,305 autoreload 17904 8517896192 Watching for file changes with StatReloader
+ERROR 2025-10-01 06:59:03,505 log 17904 6194786304 Internal Server Error: /api/auth/attorney/login/
+Traceback (most recent call last):
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 56, in wrapper_view
+    return view_func(*args, **kwargs)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/django/views/generic/base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/.venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/views.py", line 45, in post
+    refresh = self.get_token(user)
+              ^^^^^^^^^^^^^^
+AttributeError: 'AttorneyLoginView' object has no attribute 'get_token'
+INFO 2025-10-01 07:04:54,867 autoreload 17904 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/views.py changed, reloading.
+INFO 2025-10-01 07:04:55,126 autoreload 19580 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 07:05:14,608 autoreload 19580 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/serializers.py changed, reloading.
+INFO 2025-10-01 07:05:14,829 autoreload 19673 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 07:05:15,922 autoreload 19673 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/serializers.py changed, reloading.
+INFO 2025-10-01 07:05:16,066 autoreload 19690 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 07:05:21,244 autoreload 19690 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/serializers.py changed, reloading.
+INFO 2025-10-01 07:05:21,418 autoreload 19717 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 07:05:23,526 autoreload 19717 8517896192 /Users/kaushikrana/law_firm_backend/drf-boilerplate/authentication/serializers.py changed, reloading.
+INFO 2025-10-01 07:05:23,670 autoreload 19741 8517896192 Watching for file changes with StatReloader
+ERROR 2025-10-01 07:14:42,556 exceptions 19741 6206173184 API Error: {'detail': ErrorDetail(string='Given token not valid for any token type', code='token_not_valid'), 'code': ErrorDetail(string='token_not_valid', code='token_not_valid'), 'messages': [{'token_class': ErrorDetail(string='AccessToken', code='token_not_valid'), 'token_type': ErrorDetail(string='access', code='token_not_valid'), 'message': ErrorDetail(string='Token is invalid or expired', code='token_not_valid')}]} - Context: UserProfileView
+WARNING 2025-10-01 07:14:42,558 log 19741 6206173184 Unauthorized: /api/auth/profile/
+ERROR 2025-10-01 07:15:20,354 exceptions 19741 6206173184 API Error: {'detail': ErrorDetail(string='Given token not valid for any token type', code='token_not_valid'), 'code': ErrorDetail(string='token_not_valid', code='token_not_valid'), 'messages': [{'token_class': ErrorDetail(string='AccessToken', code='token_not_valid'), 'token_type': ErrorDetail(string='access', code='token_not_valid'), 'message': ErrorDetail(string='Token is invalid or expired', code='token_not_valid')}]} - Context: UserProfileView
+WARNING 2025-10-01 07:15:20,354 log 19741 6206173184 Unauthorized: /api/auth/profile/
+ERROR 2025-10-01 07:15:22,779 exceptions 19741 6206173184 API Error: {'detail': ErrorDetail(string='Given token not valid for any token type', code='token_not_valid'), 'code': ErrorDetail(string='token_not_valid', code='token_not_valid'), 'messages': [{'token_class': ErrorDetail(string='AccessToken', code='token_not_valid'), 'token_type': ErrorDetail(string='access', code='token_not_valid'), 'message': ErrorDetail(string='Token is invalid or expired', code='token_not_valid')}]} - Context: UserProfileView
+WARNING 2025-10-01 07:15:22,779 log 19741 6206173184 Unauthorized: /api/auth/profile/
+ERROR 2025-10-01 07:17:28,183 exceptions 19741 6206173184 API Error: {'detail': ErrorDetail(string='Token is invalid or expired', code='token_not_valid'), 'code': ErrorDetail(string='token_not_valid', code='token_not_valid')} - Context: CustomTokenVerifyView
+WARNING 2025-10-01 07:17:28,185 log 19741 6206173184 Unauthorized: /api/auth/token/verify/

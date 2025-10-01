@@ -17,7 +17,8 @@ class CustomUser(AbstractUser):
     last_activity = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
-    
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
     class Meta:
         db_table = 'users'
         verbose_name = 'User'

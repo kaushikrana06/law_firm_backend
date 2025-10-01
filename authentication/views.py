@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 import logging
 
 from .serializers import (
-    RegisterSerializer, LoginSerializer, UserSerializer,
+    RegisterSerializer, AttorneyLoginSerializer, UserSerializer,
     EmailVerificationSerializer, CustomTokenObtainPairSerializer
 )
 from .models import CustomUser
@@ -32,17 +32,17 @@ class RegisterView(generics.CreateAPIView):
         }, status=status.HTTP_201_CREATED)
 
 
-class LoginView(TokenObtainPairView):
+class AttorneyLoginView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
     permission_classes = [AllowAny]
     throttle_classes = [AnonRateThrottle]
 
     def post(self, request, *args, **kwargs):
-        serializer = LoginSerializer(data=request.data)
+        serializer = AttorneyLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
         
-        refresh = self.get_token(user)
+        refresh = self.get_serializer_class().get_token(user)
         return Response({
             'refresh': str(refresh),
             'access': str(refresh.access_token),
@@ -92,3 +92,6 @@ class CustomTokenRefreshView(TokenRefreshView):
 
 class CustomTokenVerifyView(TokenVerifyView):
     throttle_classes = [UserRateThrottle]
+
+class ClientLoginView(TokenObtainPairView):
+    pass    
