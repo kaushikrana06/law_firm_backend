@@ -17,7 +17,7 @@ JWT_SIGNING_KEY = 'your-jwt-signing-key-256-bits-minimum'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', ".onrender.com", "law-firm-backend-um8h.onrender.com"]
 
 RENDER_HOST = os.environ.get("law-firm-backend-um8h.onrender.com")  # e.g., law-firm-backend-um8h.onrender.com
 if RENDER_HOST:
