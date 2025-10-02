@@ -15,11 +15,13 @@ SECRET_KEY = "django-insecure-j4u+ki1jghm%-z8$t1=dg5%j$9!5h*hp_!*lnh*n^o+4^3p#(w
 JWT_SIGNING_KEY = 'your-jwt-signing-key-256-bits-minimum'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-
+RENDER_HOST = os.environ.get("law-firm-backend-um8h.onrender.com")  # e.g., law-firm-backend-um8h.onrender.com
+if RENDER_HOST:
+    ALLOWED_HOSTS += [RENDER_HOST, ".onrender.com"]
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,17 +41,17 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",          # <- move here (top, after SecurityMiddleware)
+    "whitenoise.middleware.WhiteNoiseMiddleware",     # <- add for static on Render
     "django.contrib.sessions.middleware.SessionMiddleware",
-            'corsheaders.middleware.CorsMiddleware',
-
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-        
-    'core.middleware.SecurityHeadersMiddleware',
+    "core.middleware.SecurityHeadersMiddleware",
 ]
+
 
 ROOT_URLCONF = "core.urls"
 
@@ -158,7 +160,7 @@ SIMPLE_JWT = {
     'TOKEN_OBTAIN_SERIALIZER': 'authentication.serializers.CustomTokenObtainPairSerializer',
 }
 
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'https://yourdomain.com', 'http://localhost:5173']
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'https://yourdomain.com', 'http://localhost:5174']
 CORS_ALLOW_CREDENTIALS = True
 
 
@@ -222,3 +224,11 @@ SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
 X_FRAME_OPTIONS = 'DENY'
+CSRF_TRUSTED_ORIGINS = [
+    f"https://{RENDER_HOST}" if RENDER_HOST else "https://law-firm-backend-um8h.onrender.com",
+    "http://localhost:5174",   # Vite dev
+]
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"

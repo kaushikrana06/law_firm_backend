@@ -229,3 +229,54 @@ INFO 2025-10-01 20:19:26,331 autoreload 74675 8517896192 /Users/kaushikrana/law_
 INFO 2025-10-01 20:19:26,630 autoreload 74877 8517896192 Watching for file changes with StatReloader
 INFO 2025-10-01 20:20:18,021 autoreload 75227 8517896192 Watching for file changes with StatReloader
 INFO 2025-10-01 20:20:58,386 views 75227 6131806208 User 2 logged out (refresh blacklisted)
+ERROR 2025-10-01 20:33:44,607 exceptions 75227 6131806208 API Error: {'password': [ErrorDetail(string='This password is entirely numeric.', code='password_entirely_numeric')]} - Context: RegisterView
+WARNING 2025-10-01 20:33:44,609 log 75227 6131806208 Bad Request: /api/auth/register/
+INFO 2025-10-01 20:34:33,810 models 75227 6131806208 Verification email sent to alex@gmail.com
+INFO 2025-10-01 20:34:33,810 serializers 75227 6131806208 User registered: 3
+INFO 2025-10-01 20:37:39,722 autoreload 79769 8517896192 Watching for file changes with StatReloader
+INFO 2025-10-01 20:37:44,214 models 79769 6157479936 Email verified for user 3
+INFO 2025-10-01 20:38:04,368 views 79769 6174306304 User 3 logged out (refresh blacklisted)
+ERROR 2025-10-01 20:38:19,528 exceptions 79769 6174306304 API Error: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]} - Context: AttorneyLoginView
+WARNING 2025-10-01 20:38:19,529 log 79769 6174306304 Bad Request: /api/auth/attorney/login/
+INFO 2025-10-02 08:41:25,679 autoreload 84821 8709703680 Watching for file changes with StatReloader
+INFO 2025-10-02 08:46:29,103 autoreload 84821 8709703680 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-02 08:46:29,374 autoreload 86228 8709703680 Watching for file changes with StatReloader
+INFO 2025-10-02 08:46:30,470 autoreload 86228 8709703680 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-02 08:46:30,621 autoreload 86231 8709703680 Watching for file changes with StatReloader
+WARNING 2025-10-02 08:46:34,840 log 86231 6137032704 Not Found: /auth/attorney/login/
+WARNING 2025-10-02 08:46:41,002 log 86231 6137032704 Not Found: /auth/attorney/login/
+ERROR 2025-10-02 08:50:47,947 exceptions 86231 6137032704 API Error: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]} - Context: AttorneyLoginView
+WARNING 2025-10-02 08:50:47,947 log 86231 6137032704 Bad Request: /api/auth/attorney/login/
+ERROR 2025-10-02 08:50:58,690 exceptions 86231 6137032704 API Error: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]} - Context: AttorneyLoginView
+WARNING 2025-10-02 08:50:58,690 log 86231 6137032704 Bad Request: /api/auth/attorney/login/
+INFO 2025-10-02 08:51:26,068 views 86231 6137032704 User 3 logged out (refresh blacklisted)
+ERROR 2025-10-02 08:53:43,829 exceptions 86231 6137032704 API Error: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]} - Context: AttorneyLoginView
+WARNING 2025-10-02 08:53:43,829 log 86231 6137032704 Bad Request: /api/auth/attorney/login/
+INFO 2025-10-02 08:54:11,806 views 86231 6137032704 User 3 logged out (refresh blacklisted)
+INFO 2025-10-02 08:54:56,626 models 86231 6137032704 Verification email sent to layer@firm.com
+INFO 2025-10-02 08:54:56,626 serializers 86231 6137032704 User registered: 4
+ERROR 2025-10-02 08:56:46,041 exceptions 86231 6153859072 API Error: Authentication credentials were not provided. - Context: UserProfileView
+WARNING 2025-10-02 08:56:46,041 log 86231 6153859072 Unauthorized: /api/auth/profile/
+ERROR 2025-10-02 09:31:59,015 exceptions 86231 6153859072 API Error: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]} - Context: AttorneyLoginView
+WARNING 2025-10-02 09:31:59,015 log 86231 6153859072 Bad Request: /api/auth/attorney/login/
+INFO 2025-10-02 09:32:33,437 views 86231 6153859072 User 3 logged out (refresh blacklisted)
+ERROR 2025-10-02 09:40:58,666 exceptions 86231 6153859072 API Error: Authentication credentials were not provided. - Context: UserProfileView
+WARNING 2025-10-02 09:40:58,667 log 86231 6153859072 Unauthorized: /api/auth/profile/
+ERROR 2025-10-02 09:40:58,680 exceptions 86231 6153859072 API Error: {'detail': ErrorDetail(string='Token is blacklisted', code='token_not_valid'), 'code': ErrorDetail(string='token_not_valid', code='token_not_valid')} - Context: CustomTokenRefreshView
+WARNING 2025-10-02 09:40:58,680 log 86231 6153859072 Unauthorized: /api/auth/token/refresh/
+INFO 2025-10-02 10:32:06,641 autoreload 86231 8709703680 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-02 10:32:06,901 autoreload 3383 8709703680 Watching for file changes with StatReloader
+INFO 2025-10-02 10:33:41,012 autoreload 3383 8709703680 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-02 10:33:41,167 autoreload 3529 8709703680 Watching for file changes with StatReloader
+INFO 2025-10-02 10:34:02,730 autoreload 3529 8709703680 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-02 10:34:02,899 autoreload 3568 8709703680 Watching for file changes with StatReloader
+INFO 2025-10-02 10:34:18,246 autoreload 3568 8709703680 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-02 10:34:18,415 autoreload 3605 8709703680 Watching for file changes with StatReloader
+INFO 2025-10-02 10:34:39,867 autoreload 3605 8709703680 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-02 10:34:40,032 autoreload 3644 8709703680 Watching for file changes with StatReloader
+INFO 2025-10-02 10:35:14,876 autoreload 3644 8709703680 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-02 10:35:15,038 autoreload 3710 8709703680 Watching for file changes with StatReloader
+INFO 2025-10-02 10:35:16,129 autoreload 3710 8709703680 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-02 10:35:16,277 autoreload 3713 8709703680 Watching for file changes with StatReloader
+INFO 2025-10-02 10:35:30,621 autoreload 3713 8709703680 /Users/kaushikrana/law_firm_backend/drf-boilerplate/core/settings.py changed, reloading.
+INFO 2025-10-02 10:35:30,782 autoreload 3734 8709703680 Watching for file changes with StatReloader
