@@ -15,7 +15,7 @@ JWT_SIGNING_KEY = os.getenv("JWT_SIGNING_KEY", "your-jwt-signing-key-256-bits-mi
 
 DEBUG = os.getenv("DEBUG", "true").lower() == "true"
 
-ALLOWED_HOSTS = ["13.50.225.127", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["13.50.225.127", "localhost", "127.0.0.1", "api.13-50-225-127.nip.io"]
 
 
 INSTALLED_APPS = [
@@ -128,18 +128,19 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
     "https://law-firm-frontend-ezn8.onrender.com",
-     "http://law-firm-frontend-ezn8.onrender.com"
-
+    "http://law-firm-frontend-ezn8.onrender.com"
 ]
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
+    "http://api.13-50-225-127.nip.io",
+    "https://api.13-50-225-127.nip.io",
     "http://13.50.225.127",
     "http://13.50.225.127:8000",
     "http://localhost:3000",
     "http://localhost:5173",
     "https://law-firm-frontend-ezn8.onrender.com",
-     "http://law-firm-frontend-ezn8.onrender.com"
+    "http://law-firm-frontend-ezn8.onrender.com"
 ]
 
 LOGGING = {
