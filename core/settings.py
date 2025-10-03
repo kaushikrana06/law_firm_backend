@@ -173,7 +173,7 @@ EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "10"))
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER or "noreply@example.com")
 
 FRONTEND_URL = "https://law-firm-frontend-ezn8.onrender.com"
-BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "http://13.50.225.127:8000")
+BACKEND_BASE_URL = "https://api.13-50-225-127.nip.io"
 BACKEND_VERIFY_URL = f"{BACKEND_BASE_URL}/api/auth/verify-email/"
 
 SECURE_BROWSER_XSS_FILTER = True
