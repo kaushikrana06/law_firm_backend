@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.validators import UniqueValidator
 from .models import CustomUser
 import logging
 
@@ -21,25 +22,44 @@ class UserSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, validators=[validate_password], min_length=12)
     password_confirm = serializers.CharField(write_only=True, label='Password Confirmation')
-    email = serializers.EmailField()
+    email = serializers.EmailField(
+        validators=[UniqueValidator(
+            queryset=CustomUser.objects.all(),
+            message="Email already in use."
+        )]
+    )
 
     class Meta:
         model = CustomUser
         fields = ('username', 'email', 'password', 'password_confirm', 'first_name', 'last_name')
 
     def validate(self, attrs: dict) -> dict:
+        attrs['email'] = attrs['email'].strip().lower()
         if attrs['password'] != attrs['password_confirm']:
             raise serializers.ValidationError({"password": "Passwords do not match."})
         return attrs
 
     def create(self, validated_data: dict) -> CustomUser:
+        # remove fields we don't forward
         validated_data.pop('password_confirm')
-        user = CustomUser.objects.create_user(**validated_data)
-        user.is_staff = True             
+
+        # pop BOTH email and username so they aren't duplicated in **validated_data
+        email = validated_data.pop('email').strip().lower()
+        username = validated_data.pop('username', None) or email.split('@')[0]
+        password = validated_data.pop('password')
+
+        user = CustomUser.objects.create_user(
+            username=username,  
+            email=email,         
+            password=password,
+            **validated_data     
+        )
+        user.is_staff = True
         user.save(update_fields=["is_staff"])
         user.send_email_verification()
         logger.info(f"User registered: {user.id}")
         return user
+
 
 class AttorneyLoginSerializer(serializers.Serializer):
     username = serializers.CharField(allow_blank=True, required=False)

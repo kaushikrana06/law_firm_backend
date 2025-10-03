@@ -160,7 +160,7 @@ SIMPLE_JWT = {
     'TOKEN_OBTAIN_SERIALIZER': 'authentication.serializers.CustomTokenObtainPairSerializer',
 }
 
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'https://yourdomain.com', 'http://localhost:5174']
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'https://yourdomain.com', 'http://localhost:5173']
 CORS_ALLOW_CREDENTIALS = True
 
 
@@ -208,13 +208,16 @@ LOGGING = {
     },
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'localhost'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'noreply@example.com'
+DEFAULT_FROM_EMAIL = 'kaushikrana.tata@gmail.com'
 FRONTEND_URL = 'http://localhost:3000'
-
+EMAIL_HOST_USER = 'kaushikrana.tata@gmail.com'
+EMAIL_HOST_PASSWORD = 'nbsirfmwujnemghy'
+EMAIL_TIMEOUT =10
+BACKEND_VERIFY_URL='https://law-firm-backend-um8h.onrender.com/api/auth/verify-email/'
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_HSTS_SECONDS = 0  # Disabled in debug; set to 31536000 in production
@@ -226,9 +229,10 @@ CSRF_COOKIE_SECURE = False
 X_FRAME_OPTIONS = 'DENY'
 CSRF_TRUSTED_ORIGINS = [
     f"https://{RENDER_HOST}" if RENDER_HOST else "https://law-firm-backend-um8h.onrender.com",
-    "http://localhost:5174",   # Vite dev
+    "http://localhost:5173",   "http://localhost:3000",
 ]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+COOKIE_DOMAIN = os.getenv("COOKIE_DOMAIN", None)

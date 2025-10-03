@@ -2,9 +2,15 @@ from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.db import IntegrityError 
+from django.shortcuts import redirect
+from rest_framework.views import APIView
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+from datetime import timedelta
 
 import logging
 
@@ -26,7 +32,13 @@ class RegisterView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
+        try:
+            user = serializer.save()
+        except IntegrityError:
+            return Response(
+                {"email": ["Email already in use."]},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         return Response({
             'message': 'User created successfully. Please check your email for verification.',
             'user_id': user.id,
@@ -64,6 +76,12 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 class EmailVerificationView(generics.GenericAPIView):
     serializer_class = EmailVerificationSerializer
     permission_classes = [AllowAny]
+    
+    def get(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data={"token": request.GET.get("token", "")})
+        serializer.is_valid(raise_exception=True)  # runs validation + verifies user
+        # After success, send the user somewhere nice (your frontend)
+        return redirect(f"{settings.FRONTEND_URL}/email-verified?status=success")
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

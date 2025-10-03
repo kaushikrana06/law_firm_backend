@@ -1,0 +1,11 @@
+<!doctype html>
+<html>
+  <body style="font-family:Arial,Helvetica,sans-serif;">
+    <h2>Verify your email</h2>
+    <p>Hello {{ user.first_name|default:user.username }},</p>
+    <p>Click the button below to confirm your email.</p>
+    <p><a href="{{ verify_url }}" style="background:#0b5;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;">Verify Email</a></p>
+    <p>If that doesn't work, copy this link into your browser:</p>
+    <p><a href="{{ verify_url }}">{{ verify_url }}</a></p>
+  </body>
+</html>

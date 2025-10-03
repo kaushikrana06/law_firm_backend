@@ -1,8 +1,13 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.template import TemplateDoesNotExist
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+import secrets
 from django.utils.crypto import get_random_string
 import logging
 
@@ -28,29 +33,48 @@ class CustomUser(AbstractUser):
         return f"{self.username} ({self.email})"
 
     def send_email_verification(self) -> None:
-        if self.is_email_verified:
-            return
-        
-        token = get_random_string(64)
+        token = secrets.token_urlsafe(48)
         self.email_verification_token = token
-        self.email_verification_expires = timezone.now() + timezone.timedelta(hours=24)
-        self.save(update_fields=['email_verification_token', 'email_verification_expires'])
-        
-        verification_url = f"{settings.FRONTEND_URL}/verify-email/{token}/"
-        subject = 'Verify your email address'
-        message = f'Please click this link to verify your email: {verification_url}'
-        
+        self.save(update_fields=["email_verification_token"])
+        verify_url = f"{settings.BACKEND_VERIFY_URL}?token={token}"
+
+        subject = "Verify your email address"
+        context = {
+            "user": self,
+            "verify_url": verify_url,
+            "project_name": "Your App Name",
+        }
+
         try:
-            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.email])
-            logger.info(f"Verification email sent to {self.email}")
-        except Exception as e:
-            logger.error(f"Failed to send verification email to {self.email}: {e}")
+            html_body = render_to_string("email/verification_email.html", context)
+        except TemplateDoesNotExist:
+            # Fallback inline HTML
+            html_body = (
+                f"<p>Hi {self.first_name or self.username},</p>"
+                f"<p>Please verify your email:</p>"
+                f"<p><a href='{verify_url}'>Verify Email</a></p>"
+                f"<p>If the button doesn’t work, copy this link: {verify_url}</p>"
+            )
+
+        text_body = strip_tags(html_body)
+
+        
+        msg = EmailMultiAlternatives(
+            subject=subject,
+            body=text_body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[self.email],
+        )
+        msg.attach_alternative(html_body, "text/html")
+        msg.send(fail_silently=False)
+
 
     def verify_email(self, token: str) -> bool:
-        if self.is_email_verified or self.email_verification_expires < timezone.now():
+        if self.is_email_verified:
             return False
-        
-        if self.email_verification_token == token:
+        if self.email_verification_expires and self.email_verification_expires < timezone.now():
+            return False
+        if token and secrets.compare_digest(token, (self.email_verification_token or "")):
             self.is_email_verified = True
             self.email_verification_token = None
             self.email_verification_expires = None
