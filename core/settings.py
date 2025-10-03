@@ -4,6 +4,8 @@ from datetime import timedelta
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+DJANGO_DB_PATH = os.getenv("DJANGO_DB_PATH", "/var/lib/law_firm_backend/db.sqlite3")
+
 LOG_DIR = BASE_DIR / "logs"
 LOG_DIR.mkdir(exist_ok=True)
 
@@ -69,7 +71,7 @@ WSGI_APPLICATION = "core.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": DJANGO_DB_PATH,
     }
 }
 
@@ -106,8 +108,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),
-    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=2),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": True,
@@ -190,8 +192,8 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 COOKIE_DOMAIN = os.getenv("COOKIE_DOMAIN", None)
 EMAIL_VERIFICATION_REDIRECT_SUCCESS = os.getenv(
-    "EMAIL_VERIF_SUCCESS_PATH", "/attorney/login?verified=success"
+    "EMAIL_VERIF_SUCCESS_PATH", "/success"
 )
 EMAIL_VERIFICATION_REDIRECT_ERROR = os.getenv(
-    "EMAIL_VERIF_ERROR_PATH", "/attorney/login?verified=invalid"
+    "EMAIL_VERIF_ERROR_PATH", "/invalid"
 )
