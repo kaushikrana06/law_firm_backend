@@ -125,7 +125,9 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
-    "https://law-firm-frontend-ezn8.onrender.com",  
+    "https://law-firm-frontend-ezn8.onrender.com",
+     "http://law-firm-frontend-ezn8.onrender.com"
+
 ]
 CORS_ALLOW_CREDENTIALS = True
 
@@ -135,6 +137,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
     "https://law-firm-frontend-ezn8.onrender.com",
+     "http://law-firm-frontend-ezn8.onrender.com"
 ]
 
 LOGGING = {
@@ -167,7 +170,7 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "10"))
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER or "noreply@example.com")
 
-FRONTEND_URL = os.getenv("FRONTEND_URL", "https://law-firm-frontend-ezn8.onrender.com")
+FRONTEND_URL = "https://law-firm-frontend-ezn8.onrender.com"
 BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "http://13.50.225.127:8000")
 BACKEND_VERIFY_URL = f"{BACKEND_BASE_URL}/api/auth/verify-email/"
 
@@ -187,3 +190,9 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 COOKIE_DOMAIN = os.getenv("COOKIE_DOMAIN", None)
+EMAIL_VERIFICATION_REDIRECT_SUCCESS = os.getenv(
+    "EMAIL_VERIF_SUCCESS_PATH", "/attorney/login?verified=success"
+)
+EMAIL_VERIFICATION_REDIRECT_ERROR = os.getenv(
+    "EMAIL_VERIF_ERROR_PATH", "/attorney/login?verified=invalid"
+)

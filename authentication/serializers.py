@@ -20,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
         return value
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, validators=[validate_password], min_length=12)
+    password = serializers.CharField(write_only=True, validators=[validate_password], min_length=8)
     password_confirm = serializers.CharField(write_only=True, label='Password Confirmation')
     email = serializers.EmailField(
         validators=[UniqueValidator(

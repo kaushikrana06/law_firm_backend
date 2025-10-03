@@ -11,6 +11,8 @@ from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from datetime import timedelta
+from urllib.parse import urljoin
+
 
 import logging
 
@@ -77,16 +79,24 @@ class EmailVerificationView(generics.GenericAPIView):
     serializer_class = EmailVerificationSerializer
     permission_classes = [AllowAny]
     
+    def _front_url(self, path: str) -> str:
+        base = settings.FRONTEND_URL.rstrip('/') + '/'
+        return urljoin(base, path.lstrip('/'))
+
     def get(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data={"token": request.GET.get("token", "")})
-        serializer.is_valid(raise_exception=True)  # runs validation + verifies user
-        # After success, send the user somewhere nice (your frontend)
-        return redirect(f"{settings.FRONTEND_URL}/email-verified?status=success")
+        token = request.GET.get("token", "")
+        serializer = self.get_serializer(data={"token": token})
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except Exception:
+            return redirect(self._front_url(settings.EMAIL_VERIFICATION_REDIRECT_ERROR))
+
+        return redirect(self._front_url(settings.EMAIL_VERIFICATION_REDIRECT_SUCCESS))
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        token = serializer.validated_data['token']
         return Response({'message': 'Email verified successfully.'}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
