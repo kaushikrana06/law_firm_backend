@@ -15,8 +15,12 @@ JWT_SIGNING_KEY = os.getenv("JWT_SIGNING_KEY", "your-jwt-signing-key-256-bits-mi
 
 DEBUG = os.getenv("DEBUG", "true").lower() == "true"
 
-ALLOWED_HOSTS = ["13.50.225.127", "localhost", "127.0.0.1", "api.13-50-225-127.nip.io"]
-
+ALLOWED_HOSTS = [
+    "13.50.225.127",
+    "localhost", "127.0.0.1",
+    "app.13-50-225-127.nip.io",
+    "api.13-50-225-127.nip.io",
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -129,8 +133,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://law-firm-frontend-ezn8.onrender.com",
     "http://law-firm-frontend-ezn8.onrender.com",
-    "app.13-50-225-127.nip.io",
-    "api.13-50-225-127.nip.io",
+    "http://app.13-50-225-127.nip.io",
+    "https://api.13-50-225-127.nip.io",
 ]
 CORS_ALLOW_CREDENTIALS = True
 
