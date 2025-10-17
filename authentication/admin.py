@@ -37,3 +37,23 @@
 #         if not request.user.is_superuser:
 #             return qs.filter(deleted_at__isnull=True)
 #         return qs
+
+# authentication/admin.py
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
+from .models import CustomUser
+
+@admin.register(CustomUser)
+class CustomUserAdmin(DjangoUserAdmin):
+    model = CustomUser
+
+    list_display = ("id", "email", "username", "is_staff", "is_superuser", "is_email_verified", "last_activity")
+    list_filter = ("is_staff", "is_superuser", "is_email_verified", "is_active")
+    search_fields = ("email", "username", "first_name", "last_name")  # <-- needed for autocomplete
+    ordering = ("id",)
+
+    # Keep base fieldsets and add your custom fields
+    fieldsets = DjangoUserAdmin.fieldsets + (
+        ("Verification", {"fields": ("is_email_verified", "email_verification_token", "email_verification_expires")}),
+        ("Activity", {"fields": ("last_login_ip", "last_activity", "deleted_at")}),
+    )

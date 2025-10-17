@@ -12,6 +12,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from datetime import timedelta
 from urllib.parse import urljoin
+from rest_framework.exceptions import ValidationError
+
 
 
 import logging
@@ -32,20 +34,56 @@ class RegisterView(generics.CreateAPIView):
     throttle_classes = [AnonRateThrottle]
 
     def create(self, request, *args, **kwargs):
+        incoming_email = (request.data.get("email") or "").strip().lower()
+
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except ValidationError as exc:
+            if incoming_email:
+                try:
+                    existing = CustomUser.objects.get(email=incoming_email)
+                    if not existing.is_email_verified:
+                        try:
+                            existing.send_email_verification()
+                        except Exception:
+                            logger.exception("Resend verification failed", extra={"email": incoming_email})
+                        return Response(
+                            {"message": "Account already exists but is not verified. We've resent the verification email."},
+                            status=status.HTTP_200_OK,
+                        )
+                except CustomUser.DoesNotExist:
+                    pass
+            return Response(exc.detail, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             user = serializer.save()
         except IntegrityError:
+            if incoming_email:
+                try:
+                    existing = CustomUser.objects.get(email=incoming_email)
+                    if not existing.is_email_verified:
+                        try:
+                            existing.send_email_verification()
+                        except Exception:
+                            logger.exception("Resend verification failed", extra={"email": incoming_email})
+                        return Response(
+                            {"message": "Account already exists but is not verified. We've resent the verification email."},
+                            status=status.HTTP_200_OK,
+                        )
+                except CustomUser.DoesNotExist:
+                    pass
             return Response(
                 {"email": ["Email already in use."]},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
         return Response({
             'message': 'User created successfully. Please check your email for verification.',
             'user_id': user.id,
             'is_verified': user.is_email_verified
         }, status=status.HTTP_201_CREATED)
+
 
 
 class AttorneyLoginView(TokenObtainPairView):
