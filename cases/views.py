@@ -1,32 +1,27 @@
 from django.utils import timezone
 from rest_framework import status, generics
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, BasePermission
 from rest_framework.response import Response
-from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
+from rest_framework.throttling import ScopedRateThrottle
 
-from .models import Client, Case
+from .models import Case
 from .serializers import (
     ClientPublicSerializer,
     AttorneyItemSerializer,
     CaseUpdateSerializer,
+    CasePublicSerializer,
 )
 
-from rest_framework.permissions import BasePermission
-
 class IsAttorneyCaseOwner(BasePermission):
-
     def has_object_permission(self, request, view, obj):
-        # obj is a Case
-        return getattr(obj.client, "attorney_id", None) == getattr(request.user, "id", None)
+        # obj is a Case; attorney is a FK now
+        return getattr(obj, "attorney_id", None) == getattr(request.user, "id", None)
 
-
-
-class ClientCodeThrottle(ScopedRateThrottle):
+class ClientCodeThrottle(ScopedRateThrottle):  # keep your existing throttle if you have it configured
     scope = "client_code_lookup"
 
 class ClientLookupView(APIView):
-    
     permission_classes = [AllowAny]
     throttle_classes = [ClientCodeThrottle]
 
@@ -43,17 +38,23 @@ class ClientLookupView(APIView):
         return self._lookup(code)
 
     def _lookup(self, code: str):
-        client = Client.objects.filter(code=code).first()
-        if not client:
-            # keep message generic; don't leak existence info
+        cases_qs = Case.objects.filter(client_code=code).order_by("-last_update", "-date_opened")
+        if not cases_qs.exists():
             return Response({"detail": "Client not found."}, status=status.HTTP_404_NOT_FOUND)
-        data = ClientPublicSerializer(client).data
+
+        # Use the freshest case to populate the client “profile” fields
+        head = cases_qs.first()
+        payload = {
+            "name": head.client_name,
+            "code": head.client_code,
+            "email": head.client_email,
+            "phone": head.client_phone,
+            "cases": CasePublicSerializer(cases_qs, many=True).data,
+        }
+        data = ClientPublicSerializer(payload).data
         return Response(data, status=status.HTTP_200_OK)
 
-
-
 class AttorneyBootstrapView(APIView):
-
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -65,22 +66,21 @@ class AttorneyBootstrapView(APIView):
 
         qs = (
             Case.objects
-            .select_related("client", "firm")
-            .filter(client__attorney=request.user)
+            .filter(attorney=request.user)
             .order_by("-last_update")
         )
-
         data = AttorneyItemSerializer(qs[:limit], many=True).data
         return Response(data, status=status.HTTP_200_OK)
-
 
 class CasePartialUpdateView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, IsAttorneyCaseOwner]
     serializer_class = CaseUpdateSerializer
-    queryset = Case.objects.select_related("client", "firm")
-    http_method_names = ["patch", "options","post", "head"]
+    queryset = Case.objects.all()
+    http_method_names = ["patch", "options", "post", "head"]
+
     def post(self, request, *args, **kwargs):
-            return self.partial_update(request, *args, **kwargs)
+        return self.partial_update(request, *args, **kwargs)
+
     def perform_update(self, serializer):
         instance = serializer.save()
         instance.last_update = timezone.now()

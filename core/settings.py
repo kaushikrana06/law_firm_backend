@@ -4,7 +4,7 @@ from datetime import timedelta
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-DJANGO_DB_PATH = os.getenv("DJANGO_DB_PATH", "/var/lib/law_firm_backend/db.sqlite3")
+DJANGO_DB_PATH = os.getenv("DJANGO_DB_PATH", str(BASE_DIR / "db.sqlite3"))
 
 LOG_DIR = BASE_DIR / "logs"
 LOG_DIR.mkdir(exist_ok=True)

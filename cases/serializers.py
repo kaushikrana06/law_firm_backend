@@ -1,10 +1,7 @@
 from rest_framework import serializers
-from .models import Client, Case
-
+from .models import Case
 
 class CasePublicSerializer(serializers.ModelSerializer):
-    firm_name = serializers.CharField(source="firm.name", read_only=True)
-
     class Meta:
         model = Case
         fields = (
@@ -17,23 +14,16 @@ class CasePublicSerializer(serializers.ModelSerializer):
             "notes",
         )
 
-
-class ClientPublicSerializer(serializers.ModelSerializer):
-    cases = CasePublicSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Client
-        fields = ("name", "code", "email", "phone", "cases")
-
-
+class ClientPublicSerializer(serializers.Serializer):
+    # Not a ModelSerializer anymore — we synthesize this from Case rows
+    name = serializers.CharField()
+    code = serializers.CharField()
+    email = serializers.EmailField()
+    phone = serializers.CharField()
+    cases = CasePublicSerializer(many=True)
 
 class AttorneyItemSerializer(serializers.ModelSerializer):
     case_id = serializers.UUIDField(source="id", read_only=True)
-    client_name = serializers.CharField(source="client.name", read_only=True)
-    client_code = serializers.CharField(source="client.code", read_only=True)
-    client_email = serializers.EmailField(source="client.email", read_only=True)
-    client_phone = serializers.CharField(source="client.phone", read_only=True)
-    firm_name = serializers.CharField(source="firm.name", read_only=True)
 
     class Meta:
         model = Case
@@ -45,7 +35,6 @@ class AttorneyItemSerializer(serializers.ModelSerializer):
             "date_opened", "last_update",
             "notes",
         )
-
 
 class CaseUpdateSerializer(serializers.ModelSerializer):
     class Meta:

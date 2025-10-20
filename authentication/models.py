@@ -119,3 +119,9 @@ class CustomUser(AbstractUser):
     @property
     def is_deleted(self) -> bool:
         return self.deleted_at is not None
+    
+class Attorney(CustomUser):
+    class Meta:
+        proxy = True
+        verbose_name = "Attorney"
+        verbose_name_plural = "Attorneys"    
