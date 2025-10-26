@@ -54,6 +54,7 @@ class Case(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
         related_name="cases",
+        null=True, blank=True,
     )
     attorney_name = models.CharField(max_length=50, blank=True)  
 

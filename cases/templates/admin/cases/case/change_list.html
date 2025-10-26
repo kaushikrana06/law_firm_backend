@@ -1,0 +1,159 @@
+{% extends "admin/change_list.html" %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  /* Modal shell */
+  .csv-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:1000}
+  .csv-modal{background:#1b1b1b;color:#eee;border:1px solid #333;border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.6);width:720px;max-width:95%;padding:18px}
+  .csv-modal h2{margin:0 0 12px;font-size:18px}
+  .csv-row{display:flex;gap:12px;align-items:center;margin:10px 0}
+  .csv-row label{min-width:84px}
+  .csv-row input[type="file"]{flex:1}
+  .csv-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+  .btn{background:#2b7cff;border:0;color:#fff;padding:8px 12px;border-radius:6px;cursor:pointer}
+  .btn.secondary{background:#333;color:#ddd}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+  .csv-help{font-size:12px;opacity:.8;margin-left:8px}
+  .csv-result{margin-top:10px;max-height:220px;overflow:auto;border:1px solid #333;border-radius:6px;padding:10px;display:none;background:#111}
+  .csv-result.ok{border-color:#2b7cff}
+  .csv-result.err{border-color:#cc3b3b}
+  .badge{display:inline-block;padding:2px 6px;border-radius:999px;font-size:11px;background:#2b7cff;color:#fff;margin-left:6px}
+  .switch{display:inline-flex;align-items:center;gap:6px;font-size:13px}
+</style>
+{% endblock %}
+
+{% block object-tools-items %}
+  {{ block.super }}
+  <li><a href="#" id="openCsvModal" class="addlink">Import CSV</a></li>
+{% endblock %}
+
+{% block footer %}
+{{ block.super }}
+<div class="csv-modal-backdrop" id="csvBackdrop" aria-hidden="true">
+  <div class="csv-modal" role="dialog" aria-modal="true" aria-labelledby="csvTitle">
+    <h2 id="csvTitle">Import Cases from CSV <span class="badge">No page reload</span></h2>
+
+    <form id="csvForm">
+      {% csrf_token %}
+      <div class="csv-row">
+        <label>CSV file:</label>
+        <input type="file" name="csv_file" accept=".csv" required>
+        <span class="csv-help">Headers: Client Name, Phone, Email, Firm Name, Case Type, Case Status, Date Opened, Notes</span>
+      </div>
+
+      <!-- <div class="csv-row">
+        <label></label>
+        <label class="switch">
+          <input type="checkbox" name="validate_only">
+          Dry run (validate only)
+        </label>
+      </div> -->
+
+      <div id="csvResult" class="csv-result"></div>
+
+      <div class="csv-actions">
+        <button type="button" class="btn secondary" id="csvClose">Close</button>
+        <button type="submit" class="btn" id="csvSubmit">Upload</button>
+        <button type="button" class="btn secondary" id="csvRefreshBtn" style="display:none;">Ok</button>
+        </div>
+
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+  const openBtn = document.getElementById('openCsvModal');
+  const backdrop = document.getElementById('csvBackdrop');
+  const form = document.getElementById('csvForm');
+  const resultBox = document.getElementById('csvResult');
+  const submitBtn = document.getElementById('csvSubmit');
+  const closeBtn = document.getElementById('csvClose');
+  const refreshBtn = document.getElementById('csvRefreshBtn');
+  const url = "{% url 'admin:cases_case_import_csv' %}";
+
+  function open(){
+    backdrop.style.display='flex';
+    resultBox.style.display='none';
+    resultBox.textContent='';
+    resultBox.className='csv-result';
+    refreshBtn.style.display = 'none';
+  }
+  function close(){
+    backdrop.style.display='none';
+  }
+
+  openBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    open();
+  });
+  closeBtn.addEventListener('click', function(){
+    close();
+  });
+  refreshBtn.addEventListener('click', function(){
+    window.location.reload();
+  });
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Uploading...';
+    refreshBtn.style.display = 'none';  // hide before each new upload
+
+    const fd = new FormData(form);
+
+    try{
+      const resp = await fetch(url + "?ajax=1", {
+        method: "POST",
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+        body: fd
+      });
+
+      const data = await resp.json();
+      resultBox.style.display='block';
+
+      const renderDupes = (d) => {
+        if (!d) return '';
+        const lines = [];
+        if (typeof d.skipped_duplicates_in_file === 'number') {
+          lines.push(`Skipped duplicates (file): <strong>${d.skipped_duplicates_in_file}</strong>`);
+        }
+        if (typeof d.skipped_duplicates_in_db === 'number') {
+          lines.push(`Skipped duplicates (database): <strong>${d.skipped_duplicates_in_db}</strong>`);
+        }
+        if (Array.isArray(d.duplicates) && d.duplicates.length) {
+          lines.push('<details style="margin-top:6px"><summary>Details</summary><ul style="margin:6px 0 0 18px">' +
+            d.duplicates.map(x => `<li>${x.row ? ('Row ' + x.row + ': ') : ''}${x.msg}</li>`).join('') +
+            '</ul></details>');
+        }
+        return lines.length ? `<div style="margin-top:6px">${lines.join('<br>')}</div>` : '';
+      };
+
+      if(resp.ok && data.ok){
+        resultBox.className = 'csv-result ok';
+        if(data.validated){
+          resultBox.innerHTML = `✅ Validation OK. <strong>${data.count}</strong> row(s) would be imported.` + renderDupes(data);
+        }else{
+          resultBox.innerHTML = `✅ Imported <strong>${data.created}</strong> case(s).` + renderDupes(data);
+        }
+        refreshBtn.style.display = 'inline-block'; // 👈 show Refresh button after success
+      }else{
+        resultBox.className = 'csv-result err';
+        const errs = (data && data.errors) ? data.errors : [{row:null,msg:'Upload failed'}];
+        resultBox.innerHTML = `<strong>Errors:</strong><ul style="margin:6px 0 0 18px">${errs.map(e=>`<li>${e.row?('Row '+e.row+': '):''}${e.msg}</li>`).join('')}</ul>`;
+      }
+    }catch(err){
+      resultBox.style.display='block';
+      resultBox.className = 'csv-result err';
+      resultBox.textContent = 'Network or server error.';
+    }finally{
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Upload';
+    }
+  });
+})();
+</script>
+
+
+{% endblock %}
