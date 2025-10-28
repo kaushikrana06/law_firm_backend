@@ -17,6 +17,7 @@ DEBUG = os.getenv("DEBUG", "true").lower() == "true"
 
 ALLOWED_HOSTS = [
     "13.50.225.127",
+    "13.51.167.80",
     "localhost", "127.0.0.1",
     "app.13-50-225-127.nip.io",
     "api.13-50-225-127.nip.io",
@@ -150,6 +151,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "https://law-firm-frontend-ezn8.onrender.com",
     "http://law-firm-frontend-ezn8.onrender.com"
+    "http://13.51.167.80",
 ]
 
 LOGGING = {
