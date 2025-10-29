@@ -1,24 +1,55 @@
-name: Deploy to EC2 (main)
+name: Deploy Backend to EC2
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
+    paths:
+      - "**.py"
+      - "requirements*.txt"
+      - "law_firm_backend/**"
+      - ".github/workflows/deploy-backend.yml"
+  workflow_dispatch: {}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Add EC2 to known_hosts
+      - name: Add EC2 host key
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -T 10 -p 22 -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts
+          ssh-keyscan -T 10 -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts
 
-      - name: Deploy over SSH
-        uses: appleboy/ssh-action@v1.0.3
+      - name: SSH deploy
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          # if you use a custom port: port: ${{ secrets.SSH_PORT }}
           script: |
-            sudo /opt/app/deploy.sh main
+            set -euo pipefail
+
+            BACKEND_ROOT=/srv/app/backend
+            APP_DIR=$BACKEND_ROOT/law_firm_backend
+            VENV=$BACKEND_ROOT/.venv
+
+            echo "[pull] $APP_DIR"
+            cd "$APP_DIR"
+            git fetch --all
+            git reset --hard origin/main
+
+            echo "[deps]"
+            source "$VENV/bin/activate"
+            if [ -f requirements.txt ]; then
+              pip install -r requirements.txt
+            elif [ -f "$BACKEND_ROOT/requirements.txt" ]; then
+              pip install -r "$BACKEND_ROOT/requirements.txt"
+            fi
+
+            echo "[migrate & collectstatic]"
+            python manage.py migrate --noinput
+            python manage.py collectstatic --noinput
+
+            echo "[restart]"
+            sudo systemctl restart law-firm-backend
+            sudo systemctl status law-firm-backend --no-pager -l | tail -n 30
