@@ -193,13 +193,13 @@ BACKEND_VERIFY_URL = f"{BACKEND_BASE_URL}/api/auth/verify-email/"
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
-SECURE_HSTS_SECONDS = 0                  # set to 31536000 in prod
+SECURE_HSTS_SECONDS = 31536000                  # set to 31536000 in prod
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
-SECURE_SSL_REDIRECT = False              # True after HTTPS
-SESSION_COOKIE_SECURE = False            # True after HTTPS
-CSRF_COOKIE_SECURE = False               # True after HTTPS
+SECURE_SSL_REDIRECT = True              # True after HTTPS
+SESSION_COOKIE_SECURE = True            # True after HTTPS
+CSRF_COOKIE_SECURE = True               # True after HTTPS
 X_FRAME_OPTIONS = "DENY"
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
