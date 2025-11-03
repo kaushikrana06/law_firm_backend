@@ -21,6 +21,8 @@ ALLOWED_HOSTS = [
     "localhost", "127.0.0.1",
     "app.13-50-225-127.nip.io",
     "api.13-50-225-127.nip.io",
+    "gidescase.com", 
+    "www.gidescase.com"
 ]
 
 INSTALLED_APPS = [
@@ -151,7 +153,8 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "https://law-firm-frontend-ezn8.onrender.com",
     "http://law-firm-frontend-ezn8.onrender.com"
-    "http://13.51.167.80",
+    "http://13.51.167.80","https://gidescase.com", 
+    "https://www.gidescase.com"
 ]
 
 LOGGING = {
