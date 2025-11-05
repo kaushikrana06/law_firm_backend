@@ -74,7 +74,7 @@ def _send_client_case_created_email(*, case: Case) -> None:
 class CaseCsvImportForm(forms.Form):
     csv_file = forms.FileField(
         label="CSV file",
-        help_text="Headers: Client Name, Phone, Email, Firm Name, Case Type, Case Status, Date Opened, Notes",
+        help_text="Headers: Client Name, Phone, Email, Firm Name, Case Type, Case Status, Date Opened, Notes" " (optional: Firm Email, Firm Phone)",
     )
     validate_only = forms.BooleanField(required=False, initial=False, label="Dry run (validate only)")
 
@@ -90,7 +90,7 @@ class CaseAdmin(admin.ModelAdmin):
         "id",
         "client_name", "client_code", "client_email", "client_phone",
         "attorney",
-        "firm_name",
+        "firm_name", "firm_email", "firm_phone",
         "case_type", "case_status",
         "date_opened", "last_update",
     )
@@ -98,7 +98,8 @@ class CaseAdmin(admin.ModelAdmin):
     search_fields = (
         "id",
         "client_name", "client_email", "client_code", "client_phone",
-        "firm_name", "notes",
+        "firm_name", "firm_email", "firm_phone",
+        "notes",
         "attorney__username", "attorney__email",
     )
     autocomplete_fields = ("attorney",)
@@ -181,6 +182,10 @@ class CaseAdmin(admin.ModelAdmin):
             dopen = (row.get("Date Opened") or "").strip()
             notes = (row.get("Notes") or "").strip()
 
+            # NEW: optional firm contacts
+            firm_email = (row.get("Firm Email") or "").strip()                 # NEW
+            firm_phone = re.sub(r"\D", "", (row.get("Firm Phone") or ""))      # NEW
+
             row_err = []
             if not name: row_err.append("Client Name required")
             if len(phone) != 10: row_err.append("Phone must be 10 digits")
@@ -188,6 +193,10 @@ class CaseAdmin(admin.ModelAdmin):
             if not firm: row_err.append("Firm Name required")
             if ctype not in valid_types: row_err.append(f"Case Type must be one of: {', '.join(sorted(valid_types))}")
             if cstat not in valid_stats: row_err.append(f"Case Status must be one of: {', '.join(sorted(valid_stats))}")
+
+            # NEW: validate firm_phone only if provided
+            if firm_phone and len(firm_phone) != 10:
+                row_err.append("Firm Phone must be 10 digits if provided")     # NEW
 
             try:
                 opened = datetime.strptime(dopen, "%Y-%m-%d") if dopen else timezone.now()
@@ -213,6 +222,8 @@ class CaseAdmin(admin.ModelAdmin):
                 client_phone=phone,
                 client_email=email,
                 firm_name=firm,
+                firm_email=firm_email,     # NEW
+                firm_phone=firm_phone,     # NEW
                 case_type=ctype,
                 case_status=cstat,
                 date_opened=opened,

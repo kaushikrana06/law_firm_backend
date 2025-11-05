@@ -50,6 +50,8 @@ class Case(models.Model):
     client_email = models.EmailField()
 
     firm_name = models.CharField(max_length=30)
+    firm_phone = models.CharField(max_length=10, blank=True, validators=[validate_phone_10])
+    firm_email = models.EmailField(blank=True)
     attorney = models.ForeignKey(  # dropdown in admin
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
@@ -76,6 +78,8 @@ class Case(models.Model):
             models.Index(fields=["client_code"]),
             models.Index(fields=["firm_name"]),
             models.Index(fields=["attorney"]),
+            models.Index(fields=["firm_email"]),
+            models.Index(fields=["firm_phone"]),
         ]
         ordering = ["-last_update"]
 

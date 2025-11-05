@@ -6,7 +6,9 @@ class CasePublicSerializer(serializers.ModelSerializer):
         model = Case
         fields = (
             "id",
-            "firm_name",
+            "firm_name", 
+            "firm_email", 
+            "firm_phone",
             "case_type",
             "case_status",
             "date_opened",
@@ -30,7 +32,7 @@ class AttorneyItemSerializer(serializers.ModelSerializer):
         fields = (
             "case_id",
             "client_name", "client_code", "client_email", "client_phone",
-            "firm_name",
+            "firm_name", "firm_email", "firm_phone",
             "case_type", "case_status",
             "date_opened", "last_update",
             "notes",
