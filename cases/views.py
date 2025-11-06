@@ -13,6 +13,10 @@ from .serializers import (
     CasePublicSerializer,
 )
 
+from notifications.services import (
+    notify_attorney_call_request,
+)
+
 class IsAttorneyCaseOwner(BasePermission):
     def has_object_permission(self, request, view, obj):
         # obj is a Case; attorney is a FK now
@@ -83,5 +87,41 @@ class CasePartialUpdateView(generics.UpdateAPIView):
 
     def perform_update(self, serializer):
         instance = serializer.save()
-        instance.last_update = timezone.now()
-        instance.save(update_fields=["last_update"])
+
+class ClientCallRequestView(APIView):
+    """
+    Client presses 'Ask attorney to call' in the public view.
+
+    Body: { "code": "<client_code>", "case_id": "<optional uuid>" }
+    """
+    permission_classes = [AllowAny]
+    throttle_classes = [ClientCodeThrottle]
+
+    def post(self, request):
+        code = (request.data.get("code") or "").strip()
+        case_id = request.data.get("case_id")
+
+        if not code:
+            return Response(
+                {"detail": "Missing 'code' in request body."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        qs = Case.objects.filter(client_code=code)
+        if case_id:
+            qs = qs.filter(id=case_id)
+
+        case = qs.order_by("-last_update", "-date_opened").first()
+        if not case:
+            return Response(
+                {"detail": "Client not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        devices_notified = notify_attorney_call_request(case)
+
+        return Response(
+            {"detail": "Call request sent.", "devices_notified": devices_notified},
+            status=status.HTTP_200_OK,
+        )
+ 

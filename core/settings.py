@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     "corsheaders",
 
     "authentication",
-    "cases",
+    "cases.apps.CasesConfig",
+    "notifications",
 ]
 
 MIDDLEWARE = [
@@ -201,9 +202,14 @@ SECURE_HSTS_SECONDS = 31536000                  # set to 31536000 in prod
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
-SECURE_SSL_REDIRECT = True              # True after HTTPS
-SESSION_COOKIE_SECURE = True            # True after HTTPS
-CSRF_COOKIE_SECURE = True               # True after HTTPS
+if DEBUG:
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+else:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 X_FRAME_OPTIONS = "DENY"
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
@@ -216,3 +222,6 @@ EMAIL_VERIFICATION_REDIRECT_SUCCESS = os.getenv(
 EMAIL_VERIFICATION_REDIRECT_ERROR = os.getenv(
     "EMAIL_VERIF_ERROR_PATH", "/invalid"
 )
+
+FIREBASE_CREDENTIALS_FILE = os.getenv("FIREBASE_CREDENTIALS_FILE", "")
+FIREBASE_PROJECT_ID = os.getenv("FIREBASE_PROJECT_ID", "")
