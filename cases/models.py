@@ -60,7 +60,6 @@ class Case(models.Model):
     )
     attorney_name = models.CharField(max_length=50, blank=True)  
 
-    # Case metadata
     case_type = models.CharField(max_length=32, choices=CASE_TYPE_CHOICES)
     case_status = models.CharField(max_length=32, choices=CASE_STATUS_CHOICES)
     date_opened = models.DateTimeField(default=timezone.now)
@@ -103,6 +102,44 @@ class Case(models.Model):
             conflict_code = qs.filter(client_code=self.client_code).exclude(attorney_id=self.attorney_id).exists()
             if conflict_code:
                 raise ValidationError({"attorney": "This client code is already associated with another attorney."})
+            
+    def add_status_note(self, text: str, *, status: str | None = None, created_by=None):
+        status = status or self.case_status
+        if status not in CASE_STATUSES:
+            raise ValueError(f"Invalid status: {status}")
+
+        # Find the latest note for this status, if any
+        note = (
+            self.status_notes
+            .filter(status=status)
+            .order_by("-created_at")
+            .first()
+        )
+
+        # If no note yet for this status, create one
+        if note is None:
+            note = CaseNote(case=self, status=status)
+
+        # Always update the note text (and last editor if given)
+        note.status_note = text
+        if created_by is not None:
+            note.created_by = created_by
+        note.save()
+
+        # bump last_update on the Case
+        self.last_update = timezone.now()
+        self.save(update_fields=["last_update"])
+
+        return note
+
+
+    def notes_for_status(self, status: str | None = None):
+        status = status or self.case_status
+        return self.status_notes.filter(status=status)
+
+    @property
+    def current_status_notes(self):
+        return self.notes_for_status(self.case_status)
 
     def save(self, *args, **kwargs):
         validate_phone_10(self.client_phone)
@@ -116,3 +153,26 @@ class Case(models.Model):
             self.client_code = existing.client_code if existing and existing.client_code else _generate_human_code(self.client_name)
 
         super().save(*args, **kwargs)
+
+class CaseNote(models.Model):
+    case = models.ForeignKey(
+        Case,
+        on_delete=models.CASCADE,
+        related_name="status_notes",
+    )
+    status = models.CharField(
+        max_length=32,
+        choices=CASE_STATUS_CHOICES,
+    )
+    status_note = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["created_at"]
+        indexes = [
+            models.Index(fields=["case", "status", "created_at"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"Note for {self.case.client_name} [{self.status}]"

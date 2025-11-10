@@ -53,7 +53,7 @@ class ClientLookupView(APIView):
             "code": head.client_code,
             "email": head.client_email,
             "phone": head.client_phone,
-            "cases": CasePublicSerializer(cases_qs, many=True).data,
+            "cases": cases_qs,
         }
         data = ClientPublicSerializer(payload).data
         return Response(data, status=status.HTTP_200_OK)

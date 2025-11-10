@@ -20,7 +20,44 @@ from django.utils.html import strip_tags
 
 from django.http import HttpResponse  # you use HttpResponse below
 from django.middleware.csrf import get_token  # to render a valid CSRF token
-from .models import Case, CASE_TYPES, CASE_STATUSES  # you reference these
+from .models import Case, CASE_TYPES, CASE_STATUSES , CaseNote # you reference these
+from django.forms.models import BaseInlineFormSet
+
+
+class RequiredCaseNoteInlineFormSet(BaseInlineFormSet):
+    """
+    Require at least one CaseNote with a status (not deleted) for each Case.
+    """
+    def clean(self):
+        super().clean()
+
+        has_status = False
+
+        for form in self.forms:
+            # Skip forms that didn't validate
+            if not hasattr(form, "cleaned_data"):
+                continue
+
+            # Skip forms marked for deletion
+            if form.cleaned_data.get("DELETE", False):
+                continue
+
+            status = form.cleaned_data.get("status")
+            status_note = form.cleaned_data.get("status_note")
+            existing_id = form.cleaned_data.get("id")
+
+            # Ignore completely empty extra rows
+            if not status and not status_note and not existing_id:
+                continue
+
+            if status:
+                has_status = True
+                break
+
+        if not has_status:
+            raise forms.ValidationError(
+                "At least one case status (in Case Notes) is required."
+            )
 
 User = get_user_model()
 
@@ -83,11 +120,20 @@ class CaseCsvImportForm(forms.Form):
         if not (getattr(f, "name", "") or "").lower().endswith(".csv"):
             raise forms.ValidationError("Only .csv files are allowed.")
         return f
+class CaseNoteInline(admin.TabularInline):
+    model = CaseNote
+    formset = RequiredCaseNoteInlineFormSet
+    extra = 1
+    readonly_fields = ("created_at", "updated_at")
+    fields = ("status", "status_note", "created_at","updated_at")  # <- ADD THIS
+
     
 @admin.register(Case)
 class CaseAdmin(admin.ModelAdmin):
+    inlines = [CaseNoteInline]
+
     list_display = (
-        "id",
+        "id",   
         "client_name", "client_code", "client_email", "client_phone",
         "attorney",
         "firm_name", "firm_email", "firm_phone",
@@ -104,7 +150,7 @@ class CaseAdmin(admin.ModelAdmin):
     )
     autocomplete_fields = ("attorney",)
     readonly_fields = ("last_update",)
-    exclude = ("client_code","attorney_name")  
+    exclude = ("client_code","attorney_name","case_status")  
     change_list_template = "admin/cases/case/change_list.html"
 
     def get_urls(self):
@@ -181,7 +227,12 @@ class CaseAdmin(admin.ModelAdmin):
             cstat = (row.get("Case Status") or "").strip()
             dopen = (row.get("Date Opened") or "").strip()
             notes = (row.get("Notes") or "").strip()
-
+            status_note_csv = (
+                row.get("Status Note")
+                or row.get("Status_note")
+                or row.get("status_note")
+            )
+            status_note_csv = status_note_csv.strip()
             # NEW: optional firm contacts
             firm_email = (row.get("Firm Email") or "").strip()                 # NEW
             firm_phone = re.sub(r"\D", "", (row.get("Firm Phone") or ""))      # NEW
@@ -230,6 +281,8 @@ class CaseAdmin(admin.ModelAdmin):
                 notes=notes,
             )
             obj.attorney_id = None
+            obj._status_note_csv = status_note_csv
+
             created_candidates.append({"obj": obj, "row": rownum, "key": key})
 
         if errors:
@@ -266,6 +319,20 @@ class CaseAdmin(admin.ModelAdmin):
 
         for o in to_save:
             o.save()
+            status_note_text = getattr(o, "_status_note_csv", "").strip()
+            if not status_note_text:
+                # Fallback to main case.notes if no explicit status_note column
+                status_note_text = (o.notes or "").strip()
+
+            if status_note_text:
+                # This uses your Case.add_status_note, which:
+                # - finds or creates a CaseNote for (case, status)
+                # - updates its status_note text
+                o.add_status_note(
+                    status_note_text,
+                    status=o.case_status,
+                    created_by=None,  # CSV import, no specific user
+                )
 
         return JsonResponse({
             "ok": True,
@@ -274,6 +341,19 @@ class CaseAdmin(admin.ModelAdmin):
             "skipped_duplicates_in_db": len(db_dupes),
             "duplicates": file_dupes + db_dupes,
         })
+
+    def save_related(self, request, form, formsets, change):
+        """
+        After saving the Case and its inlines, sync case.case_status
+        to the latest CaseNote.status (if any).
+        """
+        super().save_related(request, form, formsets, change)
+
+        obj = form.instance  # this is the Case
+        latest_note = obj.status_notes.order_by("-created_at").first()
+        if latest_note and obj.case_status != latest_note.status:
+            obj.case_status = latest_note.status
+            obj.save(update_fields=["case_status", "last_update"])
 
 
     @admin.action(description="Resend client access email")
