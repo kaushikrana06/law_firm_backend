@@ -62,4 +62,4 @@ def case_status_note_changed(sender, instance: CaseNote, created: bool, **kwargs
     case.save(update_fields=["last_update"])
 
     # Re-use the existing 'notes' semantics in notify_client_case_updated
-    notify_client_case_updated(case, changed_fields=["notes"])
+    notify_client_case_updated(case, changed_fields=["case_note"])
