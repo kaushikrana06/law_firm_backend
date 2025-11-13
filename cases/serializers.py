@@ -48,30 +48,46 @@ class AttorneyItemSerializer(serializers.ModelSerializer):
         )
 
 class CaseUpdateSerializer(serializers.ModelSerializer):
-    # extra field in the API, not a model field on Case
     status_note = serializers.CharField(required=False, allow_blank=True)
 
     class Meta:
         model = Case
         fields = ("notes", "case_status", "status_note")
+        # make notes & case_status optional so partial payloads work
+        extra_kwargs = {
+            "notes": {"required": False},
+            "case_status": {"required": False},
+        }
 
     def update(self, instance, validated_data):
-        # Pull out status_note text (not a Case field)
-        status_note_text = (validated_data.pop("status_note", "") or "").strip()
+        # remember previous status
+        old_status = instance.case_status
 
-        # Update Case.notes and/or Case.case_status
+        # None means "field not sent at all"
+        status_note_text = validated_data.pop("status_note", None)
+
+        # update the Case itself (notes / case_status)
         instance = super().update(instance, validated_data)
 
-        # If a status_note was sent, update the note for the current status
-        if status_note_text:
-            request = self.context.get("request")
+        # figure out who is editing (may be None)
+        request = self.context.get("request")
+        user = getattr(request, "user", None) if request else None
+        if user is not None and not getattr(user, "is_authenticated", False):
             user = None
-            if request is not None and getattr(request, "user", None) and request.user.is_authenticated:
-                user = request.user
 
-            # add_status_note does "update or create" for this status
+        # CASE 1 & 3: client SENT status_note (even empty string)
+        if status_note_text is not None:
             instance.add_status_note(
                 status_note_text,
+                status=instance.case_status,
+                created_by=user,
+            )
+
+        # CASE 2: status changed but no status_note field sent
+        elif instance.case_status != old_status:
+            # create/update note with empty text for the new status
+            instance.add_status_note(
+                "",
                 status=instance.case_status,
                 created_by=user,
             )
@@ -80,15 +96,14 @@ class CaseUpdateSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         """
-        After saving, return exactly:
+        Always return:
         {
           "notes": ...,
           "case_status": ...,
-          "status_note": <latest note for the current status>
+          "status_note": <latest note text for current status or "">
         }
         """
         rep = super().to_representation(instance)
-
         latest = (
             instance.status_notes
             .filter(status=instance.case_status)
@@ -96,6 +111,5 @@ class CaseUpdateSerializer(serializers.ModelSerializer):
             .first()
         )
         rep["status_note"] = latest.status_note if latest else ""
-
         return rep
 
